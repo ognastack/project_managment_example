@@ -1,0 +1,24 @@
+# FastAPI and ASGI server
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# HTTP client for Hasura
+httpx==0.26.0
+
+# JWT handling (decode only, no validation)
+PyJWT==2.8.0
+
+# Python utilities
+python-multipart==0.0.6
+python-dotenv==1.0.0
+
+# AWS S3 (for file uploads)
+boto3==1.34.34
+
+# Development dependencies
+pytest==7.4.4
+pytest-asyncio==0.23.3
+black==24.1.1
+ruff==0.1.14
