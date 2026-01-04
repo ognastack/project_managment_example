@@ -74,6 +74,7 @@ class TaskService:
                 due_date
                 created_at
                 updated_at
+                created_by
             }
         }
         """
@@ -92,22 +93,13 @@ class TaskService:
 
         result = await hasura.mutate(mutation, variables)
 
-        # Log activity
-        await TaskService._log_activity(
-            hasura,
-            task_id=result["insert_tasks_one"]["id"],
-            user_id=user_id,
-            activity_type="task_created"
-        )
-
         return result["insert_tasks_one"]
 
     @staticmethod
     async def update_task_status(
             hasura: HasuraClient,
             task_id: str,
-            new_status: TaskStatus,
-            user_id: str
+            new_status: TaskStatus
     ) -> Dict[str, Any]:
         """
         Update task status with validation.
@@ -116,7 +108,6 @@ class TaskService:
             hasura: Hasura client with user context
             task_id: Task ID
             new_status: New status
-            user_id: ID of user making the change
 
         Returns:
             dict: Updated task data
@@ -158,6 +149,12 @@ class TaskService:
                 id
                 status
                 updated_at
+                created_at
+                created_by
+                project_id
+                title
+                description
+                task_number
             }
         }
         """
@@ -165,19 +162,6 @@ class TaskService:
         result = await hasura.mutate(
             mutation,
             {"id": task_id, "status": new_status.value}
-        )
-
-        # Log activity
-        await TaskService._log_activity(
-            hasura,
-            task_id=task_id,
-            user_id=user_id,
-            activity_type="task_status_changed",
-            workspace_id=task["project"]["workspace_id"],
-            metadata={
-                "from_status": current_status.value,
-                "to_status": new_status.value
-            }
         )
 
         return result["update_tasks_by_pk"]

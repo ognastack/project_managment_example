@@ -122,7 +122,7 @@ async def get_task(
         )
 
 
-@router.get("/", response_model=TaskListResponse)
+@router.get("", response_model=TaskListResponse)
 async def list_tasks(
         project_id: Optional[str] = Query(None, description="Filter by project ID"),
         task_status: Optional[TaskStatus] = Query(None, description="Filter by status"),
@@ -281,8 +281,7 @@ async def update_task(
 async def update_task_status(
         task_id: str,
         status_data: TaskStatusUpdate,
-        hasura: HasuraClient = Depends(get_hasura_client),
-        token: str = Depends(get_token)
+        hasura: HasuraClient = Depends(get_hasura_client)
 ):
     """
     Update task status with validation.
@@ -292,12 +291,10 @@ async def update_task_status(
     - Returns 400 if transition is invalid
     """
     try:
-        user_id = extract_user_id(token)
         task = await TaskService.update_task_status(
             hasura,
             task_id,
-            status_data.status,
-            user_id
+            status_data.status
         )
         return task
     except InvalidStatusTransitionError as e:
