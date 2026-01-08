@@ -206,33 +206,30 @@ query GetUserRoleInWorkspace($workspace_id: uuid!) {
 # ============================================================================
 
 GET_PROJECTS = """
-query GetProjects($workspace_id: uuid!, $limit: Int!, $offset: Int!, $include_archived: Boolean!) {
+query GetProjects($where: projects_bool_exp, $limit: Int!, $offset: Int!) {
     projects(
-        where: {
-            workspace_id: {_eq: $workspace_id},
-            is_archived: {_eq: $include_archived}
-        },
-        limit: $limit,
-        offset: $offset,
-        order_by: {created_at: desc}
+        where: $where
+        limit: $limit
+        offset: $offset
+        order_by: { created_at: desc }
     ) {
-        id
-        workspace_id
-        name
-        description
-        key
-        color
-        is_archived
-        created_by
-        created_at
-        updated_at
-        tasks {
-          id
-          status
-          task_number
-          title
-        }
+    id
+    workspace_id
+    name
+    description
+    key
+    color
+    is_archived
+    created_by
+    created_at
+    updated_at
+    tasks {
+      id
+      status
+      task_number
+      title
     }
+  }
 }
 """
 

@@ -58,8 +58,6 @@ class TaskService:
         """
         # Get next task number for the project
 
-        next_number = 1
-
         # Create the task
         mutation = """
         mutation CreateTask($object: tasks_insert_input!) {
@@ -86,7 +84,6 @@ class TaskService:
                 "description": task_data.description,
                 "status": task_data.status.value,
                 "priority": task_data.priority.value,
-                "task_number": next_number,
                 "due_date": task_data.due_date.isoformat() if task_data.due_date else None
             }
         }

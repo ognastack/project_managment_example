@@ -79,7 +79,7 @@ async def create_project(
 
 @router.get("", response_model=ProjectListResponse)
 async def list_projects(
-        workspace_id: str = Query(..., description="Filter by workspace ID"),
+        workspace_id: Optional[str] = Query(None, description="Filter by workspace ID"),
         include_archived: bool = Query(False, description="Include archived projects"),
         hasura: HasuraClient = Depends(get_hasura_client),
         pagination: dict = Depends(get_pagination_params)
@@ -93,14 +93,18 @@ async def list_projects(
     - Ordered by creation date (newest first)
     """
     try:
+
+        variables = {
+            "limit": pagination["limit"],
+            "offset": pagination["offset"]
+        }
+
+        if workspace_id is not None:
+            variables["where"] = {"_and": [{"workspace_id": {"_eq": workspace_id}}]}
+
         result = await hasura.query(
             GET_PROJECTS,
-            {
-                "workspace_id": workspace_id,
-                "include_archived": include_archived,
-                "limit": pagination["limit"],
-                "offset": pagination["offset"]
-            }
+            variables
         )
 
         projects = []

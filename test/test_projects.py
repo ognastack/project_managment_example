@@ -8,7 +8,7 @@ class TestWorkSpaces(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures before each test method"""
-        self.base_url = "http://localhost:8000"
+        self.base_url = "http://localhost"
         self.signup_url = f"{self.base_url}/auth/signup"
         self.sign_in = f"{self.base_url}/auth/token?grant_type=password"
 
